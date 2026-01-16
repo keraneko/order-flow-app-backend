@@ -23,7 +23,7 @@ class StoreProductRequest extends FormRequest
     {
         $rules = [
             'name' => ['required','string', 'max:30'],
-            'price' => ['required','integer'],
+            'price' => ['required','integer','min1'],
             'is_active' => ['sometimes','boolean'],
         ];
         return $rules;

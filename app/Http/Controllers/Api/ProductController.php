@@ -21,6 +21,11 @@ class ProductController extends Controller
         return ['product_id' => $product->id];
     }
 
+    public function show(Product $product)
+    {
+        return $product;
+    }
+
     public function update(UpdateProductRequest $request, Product $product)
     {
         $product->update($request->validated());

@@ -23,7 +23,7 @@ class UpdateProductRequest extends FormRequest
     {
         $rules = [
             'name' => ['sometimes', 'string', 'max:30'],
-            'price' => ['sometimes', 'integer'],
+            'price' => ['sometimes', 'integer','min:1'],
             'is_active' => ['sometimes', 'boolean'],
         ];
         return $rules;
