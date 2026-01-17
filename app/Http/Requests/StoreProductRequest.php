@@ -23,9 +23,18 @@ class StoreProductRequest extends FormRequest
     {
         $rules = [
             'name' => ['required','string', 'max:30'],
-            'price' => ['required','integer','min1'],
+            'price' => ['required','integer','min:1'],
             'is_active' => ['sometimes','boolean'],
         ];
         return $rules;
+    }
+
+    public function messages(): array
+    {
+        return  [
+            'name.required' => '商品名は必須です',
+            'price.integer' => '価格は数字で入力してください',
+            'price.min' => '価格は１以上にしてください',
+        ];
     }
 }
