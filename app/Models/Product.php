@@ -10,6 +10,13 @@ class Product extends Model
         'name',
         'price',
         'is_active',
-
+        'is_visible',
+        'image_path'
     ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+        'is_visible' => 'boolean',
+    ];
+
 }

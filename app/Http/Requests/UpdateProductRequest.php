@@ -25,6 +25,8 @@ class UpdateProductRequest extends FormRequest
             'name' => ['sometimes', 'string', 'max:30'],
             'price' => ['sometimes', 'integer','min:1'],
             'is_active' => ['sometimes', 'boolean'],
+            'is_visible' => ['sometimes', 'boolean'],
+            'image' => ['nullable','image','max:2048'],
         ];
         return $rules;
     }
