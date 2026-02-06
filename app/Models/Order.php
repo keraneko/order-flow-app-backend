@@ -17,6 +17,7 @@ class Order extends Model
         'delivery_type',
         'pickup_store_id',
         'delivery_address',
+        'delivery_postal_code',
         'delivery_from',
         'delivery_to',
         'has_benefit',
