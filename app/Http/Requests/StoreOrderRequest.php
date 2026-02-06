@@ -38,11 +38,27 @@ class StoreOrderRequest extends FormRequest
             'customer.deliveryType'=> ['required', 'in:pickup,delivery'],
             'customer.pickupStoreId' => ['required_if:customer.deliveryType,pickup', 'integer', 'exists:stores,id'],
             'customer.deliveryAddress' => ['required_if:customer.deliveryType,delivery', 'string', 'max:255'],
+            'customer.deliveryPostalCode' => ['required_if:customer.deliveryType,delivery', 'string', 'digits:7'],
 
             
         ];
 
         return  $rules ;
     }
+
+        protected function prepareForValidation(): void
+    {
+        $postal = $this->input('customer.deliveryPostalCode');
+
+        if(is_string($postal)){
+            $postal = mb_convert_kana($postal, 'n');
+            $postal = preg_replace('/\D+/','',$postal);
+
+            $this->merge([
+                'customer.deliveryPostalCode'=>$postal,
+            ]);
+        }
+    }
+
 } 
             

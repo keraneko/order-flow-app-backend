@@ -31,7 +31,9 @@ class OrderController extends Controller
             'delivery_type' =>$customerData['deliveryType'] ,
             'pickup_store_id' => $customerData['deliveryType'] === 'pickup' ? (int) $customerData['pickupStoreId'] : null,
             'delivery_address' => $customerData['deliveryType'] === 'delivery' ? $customerData['deliveryAddress'] : null ,
+            'delivery_postal_code' => $customerData['deliveryType'] === 'delivery' ? $customerData['deliveryPostalCode'] : null ,
             'note' => $customerData['note'] ?? null,
+
             ]);
 
             $items  = $request->input('items');
