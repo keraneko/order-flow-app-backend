@@ -17,4 +17,6 @@ Route::post('/stores', [StoreController::class, 'store']);
 Route::get('/stores/{store}', [StoreController::class, 'show']);
 Route::patch('/stores/{store}',[StoreController::class, 'update']);
 
+//order
+Route::get('/orders', [OrderController::class, 'index']);
 Route::post('/orders', [OrderController::class, 'store']);
