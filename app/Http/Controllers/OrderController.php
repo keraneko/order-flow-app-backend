@@ -11,6 +11,12 @@ use App\Http\Requests\StoreOrderRequest;
 
 class OrderController extends Controller
 {
+
+    public function index()
+    {
+        return Order::select('id', 'ordered_at', 'status', 'total_amount')->orderby('ordered_at', 'desc')->get();
+    }
+
     public function store(StoreOrderRequest $request)
     {
         $result = DB::transaction(function() use($request){
