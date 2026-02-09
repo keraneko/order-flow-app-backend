@@ -20,3 +20,4 @@ Route::patch('/stores/{store}',[StoreController::class, 'update']);
 //order
 Route::get('/orders', [OrderController::class, 'index']);
 Route::post('/orders', [OrderController::class, 'store']);
+Route::get('/orders/{order}', [OrderController::class, 'show']);
