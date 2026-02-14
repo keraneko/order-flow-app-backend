@@ -62,7 +62,13 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
-        return $order->load(['customer', 'items.product']);
+        return $order->load(['customer',
+        'items.product',
+        'pickupStore'=> function($q)
+            {
+                $q->select('id','name');
+            }
+        ]);
     }
 
 }
