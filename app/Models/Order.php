@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Customer;
+use App\Models\Store;
+use App\Models\OrderItem;
 
 class Order extends Model
 {
@@ -23,4 +26,19 @@ class Order extends Model
         'has_benefit',
         'note',
     ];
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
+
+    public function items()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    public function pickupStore()
+    {
+        return $this->belongsTo(Store::class, 'pickup_store_id');
+    }
 }

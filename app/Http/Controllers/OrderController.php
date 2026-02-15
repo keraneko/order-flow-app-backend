@@ -60,4 +60,15 @@ class OrderController extends Controller
         return response()->json($result);
     }
 
+    public function show(Order $order)
+    {
+        return $order->load(['customer',
+        'items.product',
+        'pickupStore'=> function($q)
+            {
+                $q->select('id','name');
+            }
+        ]);
+    }
+
 }
