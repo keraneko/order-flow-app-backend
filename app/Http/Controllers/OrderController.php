@@ -8,19 +8,34 @@ use App\Models\Customer;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Http\Requests\StoreOrderRequest;
+use Carbon\Carbon;
+
 
 class OrderController extends Controller
 {
 
     public function index()
     {
-        return Order::select('id', 'ordered_at', 'status', 'total_amount')->orderby('ordered_at', 'desc')->get();
+        return Order::select('id', 'ordered_at', 'status', 'total_amount','delivery_date',)->orderby('ordered_at', 'desc')->get();
     }
 
     public function store(StoreOrderRequest $request)
     {
         $result = DB::transaction(function() use($request){
+            $deliveryDate = $request->input('date');  
             $customerData = $request->input('customer');
+
+            $date = $deliveryDate['deliveryDate'];
+            $from = $deliveryDate['deliveryFrom'];
+            $to =null;
+            if($customerData['deliveryType'] === 'pickup'){
+                $dt = Carbon::createFromFormat('Y-m-d H:i', $date.' '.$from);
+                $to = $dt->copy()->addMinutes(30)->format('H:i');
+            }else{
+                $to = $deliveryDate['deliveryTo'];
+            }
+
+            
             $customer = Customer::create([
                 'name' => $customerData['name'],
                 'address' => $customerData['address'],
@@ -34,6 +49,9 @@ class OrderController extends Controller
             'ordered_at' =>now(),
             'status' => 'received',
             'total_amount' =>  $request->input('totalAmount'),
+            'delivery_date' => $date,
+            'delivery_from' => $from,
+            'delivery_to' => $to,
             'delivery_type' =>$customerData['deliveryType'] ,
             'pickup_store_id' => $customerData['deliveryType'] === 'pickup' ? (int) $customerData['pickupStoreId'] : null,
             'delivery_address' => $customerData['deliveryType'] === 'delivery' ? $customerData['deliveryAddress'] : null ,

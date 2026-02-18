@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
+
 
 class StoreOrderRequest extends FormRequest
 {
@@ -22,6 +24,11 @@ class StoreOrderRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
+                //date
+                'date.deliveryDate' =>['required', 'date',"date_format:Y-m-d", ],
+                'date.deliveryFrom'=>['required', "date_format:H:i", ],
+                'date.deliveryTo'=>['nullable','required_if:customer.deliveryType,delivery', "date_format:H:i"],
+
             //customer
             'customer.name' => ['required', 'string', 'max:30'],
             'customer.phone' => ['required', 'string', 'max:12'],
@@ -58,6 +65,28 @@ class StoreOrderRequest extends FormRequest
                 'customer.deliveryPostalCode'=>$postal,
             ]);
         }
+    }
+
+    public function withValidator(Validator $validator) : void
+    {
+        $validator->after(function(Validator $validator){
+            $deliveryType = $this->input('customer.deliveryType');
+
+            if($deliveryType !== 'delivery'){ 
+                return;
+            }
+                $from = $this->input('date.deliveryFrom');
+                $to = $this->input('date.deliveryTo') ;
+
+                if(!is_string($from) || !is_string($to)){
+                    return;
+                }
+
+                if($from >= $to){
+                    $validator->errors()->add('date.deliveryTo' , '受渡し時間は開始より後の時間を選んでください');
+                } 
+        });
+        
     }
 
 } 
