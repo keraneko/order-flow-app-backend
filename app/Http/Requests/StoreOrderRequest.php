@@ -24,26 +24,26 @@ class StoreOrderRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-                //date
-                'date.deliveryDate' =>['required', 'date',"date_format:Y-m-d", ],
-                'date.deliveryFrom'=>['required', "date_format:H:i", ],
-                'date.deliveryTo'=>['nullable','required_if:customer.deliveryType,delivery', "date_format:H:i"],
+                //fulfillmentdate
+                'fulfillment.deliveryDate' =>['required', 'date',"date_format:Y-m-d", ],
+                'fulfillment.deliveryFrom'=>['required', "date_format:H:i", ],
+                'fulfillment.deliveryTo'=>['nullable','required_if:customer.deliveryType,delivery', "date_format:H:i"],
 
             //customer
             'customer.name' => ['required', 'string', 'max:30'],
             'customer.phone' => ['required', 'string', 'max:12'],
 
             //order
-            'customer.orderStoreId' =>['required', 'integer', 'exists:stores,id'],
+            'fulfillment.orderStoreId' =>['required', 'integer', 'exists:stores,id'],
             'customer.note' =>['nullable', 'string', 'max:255'],
 
             //order_item
             'items' => ['required', 'array', 'min:1'],
-            'items.*.id' => ['required', 'integer', 'exists:products,id'],
+            'items.*.productId' => ['required', 'integer', 'exists:products,id'],
             'items.*.quantity' => ['required','integer' ,'min:1'],
             'items.*.price' => ['required', 'integer','min:1'],
-            'customer.deliveryType'=> ['required', 'in:pickup,delivery'],
-            'customer.pickupStoreId' => ['required_if:customer.deliveryType,pickup', 'integer', 'exists:stores,id'],
+            'fulfillment.deliveryType'=> ['required', 'in:pickup,delivery'],
+            'fulfillment.pickupStoreId' => ['required_if:customer.deliveryType,pickup', 'integer', 'exists:stores,id'],
             'customer.deliveryAddress' => ['required_if:customer.deliveryType,delivery', 'string', 'max:255'],
             'customer.deliveryPostalCode' => ['required_if:customer.deliveryType,delivery', 'string', 'digits:7'],
 
@@ -70,20 +70,20 @@ class StoreOrderRequest extends FormRequest
     public function withValidator(Validator $validator) : void
     {
         $validator->after(function(Validator $validator){
-            $deliveryType = $this->input('customer.deliveryType');
+            $deliveryType = $this->input('fulfillment.deliveryType');
 
             if($deliveryType !== 'delivery'){ 
                 return;
             }
-                $from = $this->input('date.deliveryFrom');
-                $to = $this->input('date.deliveryTo') ;
+                $from = $this->input('fulfillment.deliveryFrom');
+                $to = $this->input('fulfillment.deliveryTo') ;
 
                 if(!is_string($from) || !is_string($to)){
                     return;
                 }
 
                 if($from >= $to){
-                    $validator->errors()->add('date.deliveryTo' , '受渡し時間は開始より後の時間を選んでください');
+                    $validator->errors()->add('fulfillment.deliveryTo' , '受渡し時間は開始より後の時間を選んでください');
                 } 
         });
         
