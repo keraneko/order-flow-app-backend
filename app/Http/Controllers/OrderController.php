@@ -8,19 +8,34 @@ use App\Models\Customer;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Http\Requests\StoreOrderRequest;
+use Carbon\Carbon;
+
 
 class OrderController extends Controller
 {
 
     public function index()
     {
-        return Order::select('id', 'ordered_at', 'status', 'total_amount')->orderby('ordered_at', 'desc')->get();
+        return Order::select('id', 'ordered_at', 'status', 'total_amount','delivery_date',)->orderby('ordered_at', 'desc')->get();
     }
 
     public function store(StoreOrderRequest $request)
     {
         $result = DB::transaction(function() use($request){
+            $deliveryDate = $request->input('fulfillment');  
             $customerData = $request->input('customer');
+
+            $date = $deliveryDate['deliveryDate'];
+            $from = $deliveryDate['deliveryFrom'];
+            $to =null;
+            if($deliveryDate['deliveryType'] === 'pickup'){
+                $dt = Carbon::createFromFormat('Y-m-d H:i', $date.' '.$from);
+                $to = $dt->copy()->addMinutes(30)->format('H:i');
+            }else{
+                $to = $deliveryDate['deliveryTo'];
+            }
+
+            
             $customer = Customer::create([
                 'name' => $customerData['name'],
                 'address' => $customerData['address'],
@@ -29,15 +44,18 @@ class OrderController extends Controller
 
             $order = Order::create([
             'customer_id' => $customer->id,
-            'order_store_id' =>(int)$customerData['orderStoreId'],
+            'order_store_id' =>(int)$deliveryDate['orderStoreId'],
             'employee_id' => null,
             'ordered_at' =>now(),
             'status' => 'received',
             'total_amount' =>  $request->input('totalAmount'),
-            'delivery_type' =>$customerData['deliveryType'] ,
-            'pickup_store_id' => $customerData['deliveryType'] === 'pickup' ? (int) $customerData['pickupStoreId'] : null,
-            'delivery_address' => $customerData['deliveryType'] === 'delivery' ? $customerData['deliveryAddress'] : null ,
-            'delivery_postal_code' => $customerData['deliveryType'] === 'delivery' ? $customerData['deliveryPostalCode'] : null ,
+            'delivery_date' => $date,
+            'delivery_from' => $from,
+            'delivery_to' => $to,
+            'delivery_type' =>$deliveryDate['deliveryType'] ,
+            'pickup_store_id' => $deliveryDate['deliveryType'] === 'pickup' ? (int) $deliveryDate['pickupStoreId'] : null,
+            'delivery_address' => $deliveryDate['deliveryType'] === 'delivery' ? $customerData['deliveryAddress'] : null ,
+            'delivery_postal_code' => $deliveryDate['deliveryType'] === 'delivery' ? $customerData['deliveryPostalCode'] : null ,
             'note' => $customerData['note'] ?? null,
 
             ]);
@@ -46,7 +64,7 @@ class OrderController extends Controller
             foreach($items as $item){
             $orderItem = OrderItem::create([
             'order_id' => $order->id,
-            'product_id' => $item['id'],
+            'product_id' => $item['productId'],
             'quantity'=> $item['quantity'],
             'unit_price'=>$item['price'],
 

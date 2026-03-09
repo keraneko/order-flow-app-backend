@@ -21,10 +21,12 @@ class Order extends Model
         'pickup_store_id',
         'delivery_address',
         'delivery_postal_code',
+        'delivery_date',
         'delivery_from',
         'delivery_to',
         'has_benefit',
         'note',
+        
     ];
 
     public function customer()
