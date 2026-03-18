@@ -3,6 +3,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\StoreController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\OrderItemsController;
 
 //products
 Route::get('/products', [ProductController::class, 'index']);
@@ -17,7 +18,10 @@ Route::post('/stores', [StoreController::class, 'store']);
 Route::get('/stores/{store}', [StoreController::class, 'show']);
 Route::patch('/stores/{store}',[StoreController::class, 'update']);
 
-//order
+//Order
 Route::get('/orders', [OrderController::class, 'index']);
 Route::post('/orders', [OrderController::class, 'store']);
 Route::get('/orders/{order}', [OrderController::class, 'show']);
+
+//OrderItems
+Route::patch('/orders/{order}/items',[OrderItemsController::class, 'update']);
