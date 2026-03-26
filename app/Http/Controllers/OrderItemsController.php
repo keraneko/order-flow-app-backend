@@ -13,6 +13,11 @@ class OrderItemsController extends Controller
 
     public function update(UpdateOrderItemsRequest $request, Order $order)
     {
+        $status = $order->status;
+        if($status !== 'received') return response()->json([
+            'message' => 'このステータスは変更できません',
+        ], 422);
+
         $payloadItems = $request->validated()['items'];
 
         $existingItems = $order->items()
