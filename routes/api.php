@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\StoreController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderItemsController;
 use App\Http\Controllers\OrderStatusController;
+use App\Http\Controllers\OrderScheduleController;
 
 //products
 Route::get('/products', [ProductController::class, 'index']);
@@ -29,3 +30,6 @@ Route::patch('/orders/{order}/items',[OrderItemsController::class, 'update']);
 
 //OrderStatus
 Route::patch('/orders/{order}/status',[OrderStatusController::class, 'update']);
+
+//OrderSchedule
+Route::patch('/orders/{order}/schedule',[OrderScheduleController::class, 'update']);
