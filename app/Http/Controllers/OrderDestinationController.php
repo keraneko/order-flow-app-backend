@@ -15,6 +15,13 @@ class OrderDestinationController extends Controller
                 'pickup_store_id' => $destination['pickup_store_id']
                 ]);
             }
+            
+            if($order->delivery_type  === 'delivery'){
+                $order->update([
+                'delivery_postal_code' => $destination['delivery_postal_code'],
+                'delivery_address' => $destination['delivery_address'],
+                ]);
+            }
 
         return $order;
     }
