@@ -7,6 +7,7 @@ use App\Http\Controllers\OrderItemsController;
 use App\Http\Controllers\OrderStatusController;
 use App\Http\Controllers\OrderScheduleController;
 use App\Http\Controllers\OrderDestinationController;
+use App\Http\Controllers\OrderDeliveryTypeController;
 
 //products
 Route::get('/products', [ProductController::class, 'index']);
@@ -37,3 +38,6 @@ Route::patch('/orders/{order}/schedule',[OrderScheduleController::class, 'update
 
 //OrderDestination
 Route::patch('/orders/{order}/destination',[OrderDestinationController::class, 'update']);
+
+//OrderDeriveryType
+Route::patch('/orders/{order}/deliveryType',[OrderDeliveryTypeController::class, 'update']);
