@@ -9,39 +9,55 @@ use App\Http\Controllers\OrderScheduleController;
 use App\Http\Controllers\OrderDestinationController;
 use App\Http\Controllers\OrderDeliveryTypeController;
 use App\Http\Controllers\OrderCustomerController;
+use Illuminate\Http\Request;
 
-//products
-Route::get('/products', [ProductController::class, 'index']);
-Route::post('/products',[ProductController::class, 'store']);
-Route::get('/products/{product}', [ProductController::class, 'show']);
-Route::patch('/products/{product}',[ProductController::class, 'update']);
-Route::delete('/products/{product}',[ProductController::class, 'destroy']);
+Route::get('/user',function(Request $request){
+    $user = $request->user();
+    return [
+        'id' => $user->id,
+        'name' => $user->name,
+        'login_id' => $user->login_id
+    ];
+})->middleware('auth:sanctum');
 
-//Stores
-Route::get('/stores', [StoreController::class, 'index'])->middleware('auth:sanctum');
-Route::post('/stores', [StoreController::class, 'store']);
-Route::get('/stores/{store}', [StoreController::class, 'show']);
-Route::patch('/stores/{store}',[StoreController::class, 'update']);
-
-//Order
-Route::get('/orders', [OrderController::class, 'index']);
+//Order作成関連
+Route::get('/stores', [StoreController::class, 'index']);
 Route::post('/orders', [OrderController::class, 'store']);
-Route::get('/orders/{order}', [OrderController::class, 'show']);
+Route::get('/products', [ProductController::class, 'index']);
 
-//OrderItems
-Route::patch('/orders/{order}/items',[OrderItemsController::class, 'update']);
+Route::middleware('auth:sanctum')->group(function(){
 
-//OrderStatus
-Route::patch('/orders/{order}/status',[OrderStatusController::class, 'update']);
+    //products    
+    Route::post('/products',[ProductController::class, 'store']);
+    Route::get('/products/{product}', [ProductController::class, 'show']);
+    Route::patch('/products/{product}',[ProductController::class, 'update']);
+    Route::delete('/products/{product}',[ProductController::class, 'destroy']);
 
-//OrderSchedule
-Route::patch('/orders/{order}/schedule',[OrderScheduleController::class, 'update']);
+    //Stores
+    Route::post('/stores', [StoreController::class, 'store']);
+    Route::get('/stores/{store}', [StoreController::class, 'show']);
+    Route::patch('/stores/{store}',[StoreController::class, 'update']);
 
-//OrderDestination
-Route::patch('/orders/{order}/destination',[OrderDestinationController::class, 'update']);
+    //Order
+    Route::get('/orders', [OrderController::class, 'index']);
+    Route::get('/orders/{order}', [OrderController::class, 'show']);
 
-//OrderDeriveryType
-Route::patch('/orders/{order}/deliveryType',[OrderDeliveryTypeController::class, 'update']);
+    //OrderItems
+    Route::patch('/orders/{order}/items',[OrderItemsController::class, 'update']);
 
-//OrderCustomer
-Route::patch('/orders/{order}/customer', [OrderCustomerController::class, 'update']);
+    //OrderStatus
+    Route::patch('/orders/{order}/status',[OrderStatusController::class, 'update']);
+
+    //OrderSchedule
+    Route::patch('/orders/{order}/schedule',[OrderScheduleController::class, 'update']);
+
+    //OrderDestination
+    Route::patch('/orders/{order}/destination',[OrderDestinationController::class, 'update']);
+
+    //OrderDeriveryType
+    Route::patch('/orders/{order}/deliveryType',[OrderDeliveryTypeController::class, 'update']);
+
+    //OrderCustomer
+    Route::patch('/orders/{order}/customer', [OrderCustomerController::class, 'update']);
+
+});
