@@ -28,7 +28,7 @@ class StoreStoreRequest extends FormRequest
             'prefecture' => ['required','string'],
             'city' => ['required','string'],
             'address_line' => ['required','string'],
-            'is_active' => ['sometimes','boolean'],
+            'is_active' => ['required','boolean'],
         ];
         return $rules;
     }
@@ -52,6 +52,21 @@ class StoreStoreRequest extends FormRequest
                 'code'=>mb_convert_kana($code, 'n')
             ]);
         }
+    }
+
+    public function messages(): array
+    {
+        return[
+            'name.required' => '店舗名は必須です',
+            'code.required' => '店コードは必須です',
+            'code.digits' => '店コードは６桁です',
+            'code.unique' => '他店と同じコードは使用できません',
+            'postal_code.required' => '郵便番号は必須です',
+            'postal_code.digits' => '郵便番号はハイフンなしの７桁で入力してください',
+            'prefecture.required' => '都道府県を入力してください',
+            'city.required' => '市町村を入力してください',
+            'address_line.required' => '番地以下を入力してください',
+        ];
     }
 
 }
