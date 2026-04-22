@@ -24,10 +24,10 @@ class StoreOrderRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-                //fulfillmentdate
-                'fulfillment.deliveryDate' =>['required', 'date',"date_format:Y-m-d", ],
-                'fulfillment.deliveryFrom'=>['required', "date_format:H:i", ],
-                'fulfillment.deliveryTo'=>['nullable','required_if:customer.deliveryType,delivery', "date_format:H:i"],
+            //fulfillmentDate
+            'fulfillment.deliveryDate' =>['required', 'date',"date_format:Y-m-d", ],
+            'fulfillment.deliveryFrom'=>['required', "date_format:H:i", ],
+            'fulfillment.deliveryTo'=>['nullable','required_if:fulfillment.deliveryType,delivery', "date_format:H:i"],
 
             //customer
             'customer.name' => ['required', 'string', 'max:30'],
@@ -43,9 +43,9 @@ class StoreOrderRequest extends FormRequest
             'items.*.quantity' => ['required','integer' ,'min:1'],
             'items.*.price' => ['required', 'integer','min:1'],
             'fulfillment.deliveryType'=> ['required', 'in:pickup,delivery'],
-            'fulfillment.pickupStoreId' => ['required_if:customer.deliveryType,pickup', 'integer', 'exists:stores,id'],
-            'customer.deliveryAddress' => ['required_if:customer.deliveryType,delivery', 'string', 'max:255'],
-            'customer.deliveryPostalCode' => ['required_if:customer.deliveryType,delivery', 'string', 'digits:7'],
+            'fulfillment.pickupStoreId' => ['required_if:fulfillment.deliveryType,pickup', 'integer', 'exists:stores,id'],
+            'customer.deliveryAddress' => ['required_if:fulfillment.deliveryType,delivery', 'string', 'max:255'],
+            'customer.deliveryPostalCode' => ['required_if:fulfillment.deliveryType,delivery', 'string', 'digits:7'],
 
             
         ];

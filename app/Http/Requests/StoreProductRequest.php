@@ -24,8 +24,8 @@ class StoreProductRequest extends FormRequest
         $rules = [
             'name' => ['required','string', 'max:30'],
             'price' => ['required','integer','min:1'],
-            'is_active' => ['sometimes','boolean'],
-            'is_visible' => ['sometimes', 'boolean'],
+            'is_active' => ['required','boolean'],
+            'is_visible' => ['required', 'boolean'],
             'image' => ['nullable','image','max:2048'],
         ];
         return $rules;
@@ -37,6 +37,7 @@ class StoreProductRequest extends FormRequest
             'name.required' => '商品名は必須です',
             'price.integer' => '価格は数字で入力してください',
             'price.min' => '価格は１以上にしてください',
+            'image.max' => '画像サイズは2MB以下にしてください' 
         ];
     }
 }
