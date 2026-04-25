@@ -16,13 +16,14 @@ Route::get('/user',function(Request $request){
     return [
         'id' => $user->id,
         'name' => $user->name,
-        'login_id' => $user->login_id
+        'login_id' => $user->login_id,
+        'role' => $user->role,
+        'store_id' => $user->store_id,
     ];
 })->middleware('auth:sanctum');
 
 //Order作成関連
 Route::get('/stores', [StoreController::class, 'index']);
-Route::post('/orders', [OrderController::class, 'store']);
 Route::get('/products', [ProductController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function(){
@@ -40,6 +41,7 @@ Route::middleware('auth:sanctum')->group(function(){
 
     //Order
     Route::get('/orders', [OrderController::class, 'index']);
+    Route::post('/orders', [OrderController::class, 'store']);
     Route::get('/orders/{order}', [OrderController::class, 'show']);
 
     //OrderItems

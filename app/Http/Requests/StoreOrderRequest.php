@@ -13,7 +13,9 @@ class StoreOrderRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $user = $this->user();
+
+        return $user !== null && $user->role === 'store_user';
     }
 
     /**
@@ -34,7 +36,7 @@ class StoreOrderRequest extends FormRequest
             'customer.phone' => ['required', 'string', 'max:12'],
 
             //order
-            'fulfillment.orderStoreId' =>['required', 'integer', 'exists:stores,id'],
+            // 'fulfillment.orderStoreId' =>['required', 'integer', 'exists:stores,id'], バックエンドから取る
             'customer.note' =>['nullable', 'string', 'max:255'],
 
             //order_item
