@@ -9,6 +9,16 @@ class OrderDestinationController extends Controller
 {
     public function update(UpdateOrderDestinationRequest $request, Order $order)
     {
+        $user = $request->user();
+        $canUpdate = ($user->role === 'admin') ||
+            (
+                $user->role === 'store_user' &&
+                $user->store_id === $order->order_store_id
+            );
+        if(!$canUpdate){
+            abort(403);
+        }
+
         $destination = $request->validated();
             if($order->delivery_type  === 'pickup'){
                 $order->update([
