@@ -14,15 +14,12 @@ class OrderItemsController extends Controller
     public function update(UpdateOrderItemsRequest $request, Order $order)
     {
         $user = $request->user();
-        $canUpdate = ($user->role === "admin") ||
-            ($user->role === 'store_user' && $user->store_id === $order->order_store_id);
-        
-        if(!$canUpdate) {
+
+        if (! $user->can('update', $order)) {
             abort(403);
         }
-
-
         $status = $order->status;
+        
         if($status !== 'received') return response()->json([
             'message' => 'このステータスは変更できません',
         ], 422);

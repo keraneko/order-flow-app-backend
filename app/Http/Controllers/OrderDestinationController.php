@@ -10,12 +10,7 @@ class OrderDestinationController extends Controller
     public function update(UpdateOrderDestinationRequest $request, Order $order)
     {
         $user = $request->user();
-        $canUpdate = ($user->role === 'admin') ||
-            (
-                $user->role === 'store_user' &&
-                $user->store_id === $order->order_store_id
-            );
-        if(!$canUpdate){
+        if (! $user->can('update', $order)) {
             abort(403);
         }
 
