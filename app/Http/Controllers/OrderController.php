@@ -14,9 +14,22 @@ use Carbon\Carbon;
 class OrderController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        return Order::select('id', 'ordered_at', 'status', 'total_amount','delivery_date',)->orderby('ordered_at', 'desc')->get();
+        $user = $request->user();
+        if($user->role === 'admin'){
+            return Order::select('id', 'ordered_at', 'status', 'total_amount','delivery_date',)
+            ->orderby('ordered_at', 'desc')
+            ->get();
+
+        } 
+        if($user->role === 'store_user'){
+           return Order::where('order_store_id', $user->store_id)
+           ->select('id', 'ordered_at', 'status', 'total_amount','delivery_date',)
+           ->orderby('ordered_at', 'desc')
+           ->get();
+        }
+         abort(403);
     }
 
     public function store(StoreOrderRequest $request)
@@ -42,9 +55,10 @@ class OrderController extends Controller
                 'phone' => $customerData['phone'] 
             ]);
 
+            $user = $request->user();
             $order = Order::create([
             'customer_id' => $customer->id,
-            'order_store_id' =>(int)$deliveryDate['orderStoreId'],
+            'order_store_id' =>$user->store_id,
             'employee_id' => null,
             'ordered_at' =>now(),
             'status' => 'received',
@@ -78,15 +92,32 @@ class OrderController extends Controller
         return response()->json($result);
     }
 
-    public function show(Order $order)
+    public function show(Request $request ,Order $order)
     {
-        return $order->load(['customer',
-        'items.product',
-        'pickupStore'=> function($q)
-            {
-                $q->select('id','name');
-            }
-        ]);
+        $user = $request->user();
+        if($user->role === 'admin'){
+            return $order->load(['customer',
+            'items.product',
+            'pickupStore'=> function($q)
+                {
+                    $q->select('id','name');
+                }
+            ]);    
+        }
+
+        if($user->role === 'store_user' &&
+            $order->order_store_id === $user->store_id){
+            return $order->load(['customer',
+            'items.product',
+            'pickupStore'=> function($q)
+                {
+                    $q->select('id','name');
+                }
+            ]);    
+        }
+
+        abort(403);
+        
     }
 
 }

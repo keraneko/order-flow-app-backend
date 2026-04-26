@@ -11,7 +11,17 @@ class OrderScheduleController extends Controller
 {
     public function update(UpdateOrderScheduleRequest $request, Order $order)
     {
-        $schedule = $request->validated();
+        $user = $request->user();
+        $canUpdate = ($user->role === 'admin') ||
+            (
+                $user->role === 'store_user' &&
+                $user->store_id === $order->order_store_id
+            );
+        if(!$canUpdate){
+            abort(403);
+        }
+
+            $schedule = $request->validated();
         
         $deliveryType = $order->delivery_type;
         $date =  $schedule['delivery_date'];
