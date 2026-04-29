@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
+use App\Models\Order;
 
 
 class StoreOrderRequest extends FormRequest
@@ -13,9 +14,7 @@ class StoreOrderRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        $user = $this->user();
-
-        return $user !== null && $user->role === 'store_user';
+        return $this->user()->can('create', Order::class) ?? false;
     }
 
     /**

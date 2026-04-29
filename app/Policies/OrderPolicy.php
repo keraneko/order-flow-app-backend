@@ -37,8 +37,9 @@ class OrderPolicy
      * Determine whether the user can create models.
      */
     public function create(User $user): bool
-    {
-        return false;
+    {    
+        return $user->role === 'store_user' &&
+            $user->store_id !== null;
     }
 
     /**
