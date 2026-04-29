@@ -95,28 +95,17 @@ class OrderController extends Controller
     public function show(Request $request ,Order $order)
     {
         $user = $request->user();
-        if($user->role === 'admin'){
+         if($user->can('view', $order)){
             return $order->load(['customer',
-            'items.product',
-            'pickupStore'=> function($q)
+                'items.product',
+                'pickupStore'=> function($q)
                 {
                     $q->select('id','name');
                 }
             ]);    
         }
-
-        if($user->role === 'store_user' &&
-            $order->order_store_id === $user->store_id){
-            return $order->load(['customer',
-            'items.product',
-            'pickupStore'=> function($q)
-                {
-                    $q->select('id','name');
-                }
-            ]);    
-        }
-
         abort(403);
+
         
     }
 

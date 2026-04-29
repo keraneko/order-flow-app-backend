@@ -10,14 +10,18 @@ class OrderDeliveryTypeController extends Controller
 {
     public function update(UpdateOrderDeliveryTypeRequest $request, Order $order)
     {
+        $user = $request->user();
+        if (! $user->can('update', $order)) {
+            abort(403);
+        }
+
         $deliveryType = $request->validated();
-        
 
         if($deliveryType['delivery_type'] === 'pickup'){
             $date = $order->delivery_date;
             $from = $order->delivery_from;
             $dt = Carbon::createFromFormat('Y-m-d H:i:s', $date.' '.$from);
-            $to = $dt->copy()->addMinutes(30)->format('H:i');
+            $to = $dt->copy()->addMinutes(30)->format('H:i:s');
             
             $order->update([
                 'delivery_type' => $deliveryType['delivery_type'],

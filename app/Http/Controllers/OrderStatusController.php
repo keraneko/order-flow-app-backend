@@ -11,16 +11,9 @@ class OrderStatusController extends Controller
     {
         $user = $request->user();
 
-        $canUpdate =($user->role === 'admin') ||
-            (
-                $user->role === 'store_user' &&    
-                $user->store_id === $order->order_store_id
-            );
-
-        if(!$canUpdate){
+        if (! $user->can('update', $order)) {
             abort(403);
         }
-
         $status = $request->validated()['status'];
         $order->update([
             'status' => $status

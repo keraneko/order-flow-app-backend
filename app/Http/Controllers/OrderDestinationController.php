@@ -9,6 +9,11 @@ class OrderDestinationController extends Controller
 {
     public function update(UpdateOrderDestinationRequest $request, Order $order)
     {
+        $user = $request->user();
+        if (! $user->can('update', $order)) {
+            abort(403);
+        }
+
         $destination = $request->validated();
             if($order->delivery_type  === 'pickup'){
                 $order->update([

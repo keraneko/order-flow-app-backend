@@ -9,6 +9,11 @@ class OrderCustomerController extends Controller
 {
     public function update(UpdateOrderCustomerRequest $request, Order $order)
     {
+        $user = $request->user();
+        if (! $user->can('update', $order)) {
+            abort(403);
+        }
+
         $customer = $request->validated();
         $order->customer->update([
             'name' => $customer['name'],
@@ -17,5 +22,6 @@ class OrderCustomerController extends Controller
         ]);
 
         return $order->customer;
+        
     }
 }
