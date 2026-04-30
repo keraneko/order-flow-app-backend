@@ -16,6 +16,11 @@ class ProductController extends Controller
 
     public function store(StoreProductRequest $request)
     {
+        $user = $request->user();
+        if(!$user->can('create',Product::class)){
+            abort(403);
+        }
+
         $data = $request->validated();
         if($request->hasFile('image')){
             $path = $request->file('image')->store('products','public');
@@ -34,6 +39,11 @@ class ProductController extends Controller
 
     public function update(UpdateProductRequest $request, Product $product)
     {
+        $user = $request->user();
+        if(!$user->can('update',$product)){
+            abort(403);
+        }
+
         $data = $request->validated();
         if($request->hasFile('image')){
             $path = $request->file('image')->store('products','public');
@@ -46,11 +56,5 @@ class ProductController extends Controller
         return $product_api;
     }
 
-    public function destroy(Product $product)
-    {
-        $product->delete();
-        return response()->noContent();
-        
-    }
 
 }
