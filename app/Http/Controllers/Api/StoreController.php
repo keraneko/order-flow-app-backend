@@ -16,6 +16,11 @@ class StoreController extends Controller
 
     public function store(StoreStoreRequest $request)
     {
+        $user = $request->user();
+        if(! $user->can('create',Store::class)){
+            abort(403);
+        }
+
         $store = Store::create($request->validated());
         return Store::select(
             'id',
@@ -36,6 +41,11 @@ class StoreController extends Controller
 
     public function update(UpdateStoreRequest $request, Store $store)
     {
+        $user = $request->user();
+        if(! $user->can('update',$store)){
+            abort(403);
+        }
+
         $data = $request->validated();
         $store->update($data);
 
