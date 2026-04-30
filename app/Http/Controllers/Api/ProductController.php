@@ -17,7 +17,7 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         $user = $request->user();
-        if(!$user->can('create',Product::class)){
+        if(! $user->can('create',Product::class)){
             abort(403);
         }
 
@@ -40,7 +40,7 @@ class ProductController extends Controller
     public function update(UpdateProductRequest $request, Product $product)
     {
         $user = $request->user();
-        if(!$user->can('update',$product)){
+        if(! $user->can('update',$product)){
             abort(403);
         }
 
