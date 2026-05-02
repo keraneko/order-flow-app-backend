@@ -26,7 +26,7 @@ class StoreOrderRequest extends FormRequest
     {
         $rules = [
             //fulfillmentDate
-            'fulfillment.deliveryDate' =>['required', 'date',"date_format:Y-m-d", ],
+            'fulfillment.deliveryDate' =>['required', 'date',"date_format:Y-m-d", 'after_or_equal:today'],
             'fulfillment.deliveryFrom'=>['required', "date_format:H:i", ],
             'fulfillment.deliveryTo'=>['nullable','required_if:fulfillment.deliveryType,delivery', "date_format:H:i"],
 
@@ -35,7 +35,6 @@ class StoreOrderRequest extends FormRequest
             'customer.phone' => ['required', 'string', 'max:12'],
 
             //order
-            // 'fulfillment.orderStoreId' =>['required', 'integer', 'exists:stores,id'], バックエンドから取る
             'customer.note' =>['nullable', 'string', 'max:255'],
 
             //order_item

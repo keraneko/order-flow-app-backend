@@ -23,7 +23,7 @@ class UpdateOrderScheduleRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'delivery_date' =>['required', 'date',"date_format:Y-m-d", ],
+            'delivery_date' =>['required', 'date',"date_format:Y-m-d",'after_or_equal:today'],
             'delivery_from'=>['required', "date_format:H:i", ],
             'delivery_to'=>['nullable','required_if:customer.deliveryType,delivery', "date_format:H:i"],
         ];
