@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Http\Requests\UpdateProductSalesStatusRequest;
 
 class ProductController extends Controller
 {
@@ -54,6 +55,24 @@ class ProductController extends Controller
          ->where('id',$product->id)->first();
 
         return $product_api;
+    }
+
+    public function updateSalesStatus(UpdateProductSalesStatusRequest $request, Product $product)
+    {
+        $user = $request->user();
+        if(! $user->can('update',$product)){
+            abort(403);
+        }
+
+        $validated = $request->validated();
+        $product->update($validated);
+
+        $productStatus = Product::select('id','is_active')
+         ->where('id',$product->id)->first();
+
+
+        return $productStatus;
+
     }
 
 
