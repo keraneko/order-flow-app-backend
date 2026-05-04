@@ -18,11 +18,14 @@ class OrderItemsController extends Controller
         if (! $user->can('update', $order)) {
             abort(403);
         }
-        $status = $order->status;
         
-        if($status !== 'received') return response()->json([
-            'message' => 'このステータスは変更できません',
-        ], 422);
+        if(! $user->can('updateReceivedOrder', $order)){
+            return response()->json([
+                'message' => '受注以外のステータスは更新できません'
+            ],422);
+        }
+        
+        
 
         $payloadItems = $request->validated()['items'];
 

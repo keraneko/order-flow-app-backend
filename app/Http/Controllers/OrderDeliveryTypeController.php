@@ -15,6 +15,12 @@ class OrderDeliveryTypeController extends Controller
             abort(403);
         }
 
+        if(! $user->can('updateReceivedOrder', $order)){
+            return response()->json([
+                'message' => '受注以外のステータスは更新できません'
+            ],422);
+        }
+
         $deliveryType = $request->validated();
 
         if($deliveryType['delivery_type'] === 'pickup'){

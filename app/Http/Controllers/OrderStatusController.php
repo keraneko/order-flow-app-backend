@@ -14,6 +14,13 @@ class OrderStatusController extends Controller
         if (! $user->can('update', $order)) {
             abort(403);
         }
+
+        if(! $user->can('updateReceivedOrder',$order)){
+            return response()->json([
+                'message' =>'受注以外のステータスは更新できません'],
+                422);
+        }
+
         $status = $request->validated()['status'];
         $order->update([
             'status' => $status

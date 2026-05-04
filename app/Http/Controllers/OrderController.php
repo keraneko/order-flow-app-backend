@@ -94,7 +94,7 @@ class OrderController extends Controller
 
     public function show(Request $request ,Order $order)
     {
-        $user = $request->user();
+         $user = $request->user();
          if($user->can('view', $order)){
             return $order->load(['customer',
                 'items.product',
@@ -102,9 +102,9 @@ class OrderController extends Controller
                 {
                     $q->select('id','name');
                 }
-            ]);    
-        }
-        abort(403);
+             ]);    
+         }
+         abort(403);
 
         
     }

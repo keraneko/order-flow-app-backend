@@ -59,6 +59,13 @@ class OrderPolicy
         return false;
     }
 
+    public function updateReceivedOrder(User $user, Order $order): bool
+    {
+        return $this->update($user,$order)
+            && $order->status === 'received';
+    }
+
+
     /**
      * Determine whether the user can delete the model.
      */

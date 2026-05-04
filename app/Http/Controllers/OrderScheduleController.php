@@ -17,6 +17,13 @@ class OrderScheduleController extends Controller
             abort(403);
         }
 
+        if(! $user->can('updateReceivedOrder',$order)){
+            return response()->json([
+                'message' =>'受注以外のステータスは更新できません'],
+                422);
+        }
+
+
         $schedule = $request->validated();
         
         $deliveryType = $order->delivery_type;
