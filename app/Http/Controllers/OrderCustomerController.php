@@ -9,9 +9,15 @@ class OrderCustomerController extends Controller
 {
     public function update(UpdateOrderCustomerRequest $request, Order $order)
     {
-        $user = $request->user();
+         $user = $request->user();
         if (! $user->can('update', $order)) {
             abort(403);
+        }
+
+        if(! $user->can('updateReceivedOrder', $order)){
+            return response()->json([
+                'message' => '受注以外のステータスは更新できません'
+            ],422);
         }
 
         $customer = $request->validated();
