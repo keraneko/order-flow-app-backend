@@ -29,4 +29,19 @@ class UpdateOrderCustomerRequest extends FormRequest
         ];
         return $rules;
     }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'お名前を入力してください',
+            'name.max' => 'お名前は30文字以内で入力してください',
+
+            'phone.required' => '電話番号を入力してください',
+            'phone.min' => '電話番号は10桁以上11桁以内で入力してください',
+            'phone.max' => '電話番号は10桁以上11桁以内で入力してください',
+            'phone.regex' => '電話番号は半角数字のみで入力してください',
+
+            'address.max' => '住所は255文字以内で入力してください',
+        ];
+    }
 }
