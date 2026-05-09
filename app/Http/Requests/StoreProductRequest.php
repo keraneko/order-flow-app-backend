@@ -33,11 +33,22 @@ class StoreProductRequest extends FormRequest
 
     public function messages(): array
     {
-        return  [
-            'name.required' => '商品名は必須です',
-            'price.integer' => '価格は数字で入力してください',
-            'price.min' => '価格は１以上にしてください',
-            'image.max' => '画像サイズは2MB以下にしてください' 
+    return [
+        'name.required' => '商品名は必須です',
+        'name.max' => '商品名は30文字以内で入力してください',
+
+        'price.required' => '価格を入力してください',
+        'price.integer' => '価格は数字で入力してください',
+        'price.min' => '価格は1以上で入力してください',
+
+        'is_active.required' => '販売状態を選択してください',
+        'is_active.boolean' => '販売状態の値が正しくありません',
+
+        'is_visible.required' => '表示/非表示を選択してください',
+        'is_visible.boolean' => '表示/非表示の値が正しくありません',
+
+        'image.image' => '画像ファイルを選択してください',
+        'image.max' => '画像サイズは2MB以下にしてください',
         ];
     }
 }
