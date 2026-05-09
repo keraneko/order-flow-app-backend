@@ -24,13 +24,13 @@ class UpdateStoreRequest extends FormRequest
     {
 
         $rules = [
-            'name' => ['required','string'],
+            'name' => ['required','string','max:50'],
             'code' => ['required','string', 'digits:6',
                Rule::unique('stores', 'code')->ignore($this->route('store')->id),],
             'postal_code' => ['required', 'digits:7'],
-            'prefecture' => ['required','string'],
-            'city' => ['required','string'],
-            'address_line' => ['required','string'],
+            'prefecture' => ['required','string','max:10'],
+            'city' => ['required','string','max:50'],
+            'address_line' => ['required','string','max:255'],
             'is_active' => ['required','boolean'],
         ];
         return $rules;
@@ -62,14 +62,16 @@ class UpdateStoreRequest extends FormRequest
     {
         return[
             'name.required' => '店舗名は必須です',
+            'name.max' => '店舗名は50文字以内で入力してください',
             'code.required' => '店コードは必須です',
-            'code.digits' => '店コードは６桁です',
+            'code.digits' => '店コードは6桁の数字で入力してください',
             'code.unique' => '他店と同じコードは使用できません',
             'postal_code.required' => '郵便番号は必須です',
             'postal_code.digits' => '郵便番号は7桁の数字で入力してください',
             'prefecture.required' => '都道府県を入力してください',
-            'city.required' => '市町村を入力してください',
+            'city.required' => '市区町村を入力してください',
             'address_line.required' => '番地以下を入力してください',
+            'address_line.max' => '番地以下は255文字以内で入力してください',
             'is_active.required' => '公開/非公開は必須です',
             'is_active.boolean' => '公開/非公開の値が正しくありません',
         ];
