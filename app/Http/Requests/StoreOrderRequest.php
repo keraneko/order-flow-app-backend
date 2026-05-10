@@ -4,7 +4,9 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
+use Illuminate\Validation\Rule;
 use App\Models\Order;
+
 
 
 class StoreOrderRequest extends FormRequest
@@ -43,7 +45,7 @@ class StoreOrderRequest extends FormRequest
             'items.*.quantity' => ['required','integer' ,'min:1'],
             'items.*.price' => ['required', 'integer','min:1'],
             'fulfillment.deliveryType'=> ['required', 'in:pickup,delivery'],
-            'fulfillment.pickupStoreId' => ['required_if:fulfillment.deliveryType,pickup', 'integer', 'exists:stores,id'],
+            'fulfillment.pickupStoreId' => ['required_if:fulfillment.deliveryType,pickup', 'integer', Rule::exists('stores','id')->where('is_active',true)],
             'customer.deliveryAddress' => ['required_if:fulfillment.deliveryType,delivery', 'string', 'max:255'],
             'customer.deliveryPostalCode' => ['required_if:fulfillment.deliveryType,delivery', 'string', 'digits:7'],
 
