@@ -3,15 +3,30 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Http\Requests\StoreStoreRequest;
 use App\Http\Requests\UpdateStoreRequest;
 use App\Models\Store;
 
 class StoreController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $user = $request->user();
+        if(! $user->can('viewAny',Store::class)){
+            abort(403);
+        }
         return Store::select('id', 'name','code','postal_code','prefecture','city','address_line','is_active',)->orderby('id')->get();
+    }
+
+    public function activeIndex()
+    {
+        $activeStore = Store::where('is_active', true)
+            ->select('id','name','postal_code','prefecture','city','address_line')
+            ->orderby('id')
+            ->get();
+        
+        return $activeStore;
     }
 
     public function store(StoreStoreRequest $request)

@@ -39,7 +39,9 @@ class OrderPolicy
     public function create(User $user): bool
     {    
         return $user->role === 'store_user' &&
-            $user->store_id !== null;
+            $user->store_id !== null &&
+            $user->store !== null &&
+            $user->store->is_active === true;
     }
 
     /**

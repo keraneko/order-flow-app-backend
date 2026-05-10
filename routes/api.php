@@ -23,7 +23,7 @@ Route::get('/user',function(Request $request){
 })->middleware('auth:sanctum');
 
 //Order作成関連
-Route::get('/stores', [StoreController::class, 'index']);
+Route::get('/order/stores', [StoreController::class, 'activeIndex']);
 Route::get('/products', [ProductController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function(){
@@ -36,6 +36,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::delete('/products/{product}',[ProductController::class, 'destroy']);
 
     //Stores
+    Route::get('/stores', [StoreController::class, 'index']);
     Route::post('/stores', [StoreController::class, 'store']);
     Route::get('/stores/{store}', [StoreController::class, 'show']);
     Route::patch('/stores/{store}',[StoreController::class, 'update']);

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateOrderDeliveryTypeRequest extends FormRequest
 {
@@ -28,13 +29,15 @@ class UpdateOrderDeliveryTypeRequest extends FormRequest
         ];
         
         if($deliveryType === 'pickup') {
-            $rules['pickup_store_id'] = 'required|integer|exists:stores,id';
+            $rules['pickup_store_id'] =[
+                'required', 'integer', Rule::exists('stores','id')->where('is_active',true)
+                ];
             
 
         }
-        elseif($deliveryType === 'delivery') {
-            $rules['delivery_postal_code'] ='required|string|digits:7';
-            $rules['delivery_address'] = 'required|string|max:255';
+        elseif ($deliveryType === 'delivery') {
+            $rules['delivery_postal_code'] = ['required', 'string', 'digits:7'];
+            $rules['delivery_address'] = ['required', 'string', 'max:255'];
         }  
 
         return $rules;
@@ -62,7 +65,7 @@ class UpdateOrderDeliveryTypeRequest extends FormRequest
 
             'pickup_store_id.required' => '受取店舗を選択してください',
             'pickup_store_id.integer' => '受取店舗の値が正しくありません',
-            'pickup_store_id.exists' => '選択された受取店舗が存在しません',
+            'pickup_store_id.exists' => '選択された受取店舗は現在利用できません',
 
             'delivery_postal_code.required' => '郵便番号を入力してください',
             'delivery_postal_code.digits' => '郵便番号は7桁の数字で入力してください',
