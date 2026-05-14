@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
+use Carbon\Carbon;
 
 class UpdateOrderScheduleRequest extends FormRequest
 {
@@ -23,7 +24,7 @@ class UpdateOrderScheduleRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'delivery_date' =>['required',"date_format:Y-m-d",'after_or_equal:today'],
+            'delivery_date' =>['required',"date_format:Y-m-d"],
             'delivery_from'=>['required', "date_format:H:i", ],
             'delivery_to'=>['nullable', "date_format:H:i"],
         ];
@@ -33,6 +34,23 @@ class UpdateOrderScheduleRequest extends FormRequest
         public function withValidator(Validator $validator) : void
         {
             $validator->after(function(Validator $validator){
+
+                $deliveryDate = $this->input('delivery_date');
+                if(is_string($deliveryDate) && preg_match('/^\d{4}-\d{2}-\d{2}$/',$deliveryDate)){
+                    $date = Carbon::createFromFormat('!Y-m-d', $deliveryDate);
+                    $minDate = today()->addDays(2);
+
+                    if($date->lt($minDate)){
+                    $validator->errors()->add(
+                        'delivery_date',
+                        '希望日は2日後以降の日付を選択してください'
+                         );
+                    }
+
+                }
+                 
+                
+
                 $order = $this->route('order');
                 $deliveryType = $order->delivery_type;
 
