@@ -25,6 +25,7 @@ Order Flow App は、店舗で受け付けた注文を管理するための注�
 - Laravel 12（API）
 - PHP 8.4（Docker / Laravel Sail）
 - MySQL
+- Laravel Sanctum（認証）
 
 ## 主な機能
 
@@ -39,7 +40,7 @@ Order Flow App は、店舗で受け付けた注文を管理するための注�
 
 ## 権限制御
 
-このアプリでは、ユーザーの role によって操作できる範囲を分けています。
+このアプリでは、Laravel Sanctum による認証を行い、ログインユーザーの role によって操作できる範囲を分けています。
 
 ### admin
 
