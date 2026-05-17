@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Product;
 use App\Http\Requests\StoreOrderRequest;
 use Carbon\Carbon;
 
@@ -48,6 +49,18 @@ class OrderController extends Controller
                 $to = $deliveryDate['deliveryTo'];
             }
 
+            $items = $request->input('items');
+
+            $productIds = collect($items)->pluck('productId')->all();
+
+            $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
+            
+            $totalAmount = collect($items)->sum(function ($item) use ($products) {
+                $product = $products[$item['productId']];
+
+                return $product->price * $item['quantity'];
+            });
+
             
             $customer = Customer::create([
                 'name' => $customerData['name'],
@@ -62,7 +75,7 @@ class OrderController extends Controller
             'employee_id' => null,
             'ordered_at' =>now(),
             'status' => 'received',
-            'total_amount' =>  $request->input('totalAmount'),
+            'total_amount' =>  $totalAmount,
             'delivery_date' => $date,
             'delivery_from' => $from,
             'delivery_to' => $to,
@@ -74,13 +87,12 @@ class OrderController extends Controller
 
             ]);
 
-            $items  = $request->input('items');
             foreach($items as $item){
-            $orderItem = OrderItem::create([
+            OrderItem::create([
             'order_id' => $order->id,
             'product_id' => $item['productId'],
             'quantity'=> $item['quantity'],
-            'unit_price'=>$item['price'],
+            'unit_price'=>$products[$item['productId']]->price,
 
             ]);}
 

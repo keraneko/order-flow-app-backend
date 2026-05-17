@@ -44,7 +44,6 @@ class StoreOrderRequest extends FormRequest
             'items' => ['required', 'array', 'min:1'],
             'items.*.productId' => ['required', 'integer', 'exists:products,id'],
             'items.*.quantity' => ['required','integer' ,'min:1'],
-            'items.*.price' => ['required', 'integer','min:1'],
             'fulfillment.deliveryType'=> ['required', 'in:pickup,delivery'],
             'fulfillment.pickupStoreId' => ['required_if:fulfillment.deliveryType,pickup', 'integer', Rule::exists('stores','id')->where('is_active',true)],
             'customer.deliveryAddress' => ['required_if:fulfillment.deliveryType,delivery', 'string', 'max:255'],
@@ -160,10 +159,6 @@ class StoreOrderRequest extends FormRequest
             'items.*.quantity.required' => '数量を入力してください',
             'items.*.quantity.integer' => '数量は整数で入力してください',
             'items.*.quantity.min' => '数量は1以上で入力してください',
-
-            'items.*.price.required' => '商品価格が取得できませんでした',
-            'items.*.price.integer' => '商品価格の形式が正しくありません',
-            'items.*.price.min' => '商品価格が正しくありません',
         ];
     }
 
